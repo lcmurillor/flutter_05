@@ -6,7 +6,7 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Cambiar luego por una intancia de movie
+    // ignore: unused_local_variable
     final String movie =
         ModalRoute.of(context)?.settings.arguments.toString() ?? 'no-movie';
 
