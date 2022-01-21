@@ -45,8 +45,9 @@ class MovieSearchDelegate extends SearchDelegate {
     }
     //el listen es para que no se pase redibujando
     final movieProvider = Provider.of<MoviesProvider>(context, listen: false);
-    return FutureBuilder(
-      future: movieProvider.searchMovie(query),
+    movieProvider.getSuggestionByQuery(query);
+    return StreamBuilder(
+      stream: movieProvider.suggestionStream,
       builder: (_, AsyncSnapshot<List<Movie>> snapshot) {
         if (!snapshot.hasData) {
           return _emptyContainer();
@@ -62,6 +63,31 @@ class MovieSearchDelegate extends SearchDelegate {
       },
     );
   }
+
+  // @override
+  // Widget buildSuggestions(BuildContext context) {
+  //   if (query.isEmpty) {
+  //     return _emptyContainer();
+  //   }
+  //   //el listen es para que no se pase redibujando
+  //   final movieProvider = Provider.of<MoviesProvider>(context, listen: false);
+  //   return FutureBuilder(
+  //     future: movieProvider.searchMovie(query),
+  //     builder: (_, AsyncSnapshot<List<Movie>> snapshot) {
+  //       if (!snapshot.hasData) {
+  //         return _emptyContainer();
+  //       }
+
+  //       final movies = snapshot.data!;
+  //       return ListView.builder(
+  //         itemCount: movies.length,
+  //         itemBuilder: (_, index) => _MovieItem(
+  //           movie: movies[index],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }
 
 class _MovieItem extends StatelessWidget {
