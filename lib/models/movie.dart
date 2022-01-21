@@ -33,10 +33,19 @@ class Movie {
   String? backdropPath;
   String? posterPath;
   String? releaseDate;
+  String? heroId;
 
   get fullPosterImg {
     if (posterPath != null) {
       return 'https://image.tmdb.org/t/p/w500$posterPath';
+    } else {
+      return 'https://i.stack.imgur.com/GNhxO.png';
+    }
+  }
+
+  get fullBackdropPath {
+    if (backdropPath != null) {
+      return 'https://image.tmdb.org/t/p/w500$backdropPath';
     } else {
       return 'https://i.stack.imgur.com/GNhxO.png';
     }

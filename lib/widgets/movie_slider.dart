@@ -1,18 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:peliculas/models/models.dart';
 
-class MovieSlider extends StatelessWidget {
-  const MovieSlider({Key? key, required this.movies, required this.title})
+class MovieSlider extends StatefulWidget {
+  const MovieSlider(
+      {Key? key,
+      required this.movies,
+      required this.title,
+      required this.onNextPage})
       : super(key: key);
 
   final List<Movie> movies;
   final String? title;
+  final Function onNextPage;
+
+  @override
+  State<MovieSlider> createState() => _MovieSliderState();
+}
+
+class _MovieSliderState extends State<MovieSlider> {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 500) {
+        widget.onNextPage();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    if (movies.isEmpty) {
+    if (widget.movies.isEmpty) {
       return SizedBox(
         width: double.infinity,
         height: size.height * 0.5,
@@ -29,11 +57,11 @@ class MovieSlider extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (title != null)
+          if (widget.title != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                title!,
+                widget.title!,
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -43,10 +71,13 @@ class MovieSlider extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
+                controller: scrollController,
                 scrollDirection: Axis.horizontal,
-                itemCount: movies.length,
+                itemCount: widget.movies.length,
                 itemBuilder: (_, index) => _MoviePoster(
-                      movie: movies[index],
+                      movie: widget.movies[index],
+                      heroId:
+                          '${widget.title}-$index-${widget.movies[index].id}',
                     )),
           ),
         ],
@@ -56,12 +87,18 @@ class MovieSlider extends StatelessWidget {
 }
 
 class _MoviePoster extends StatelessWidget {
-  const _MoviePoster({Key? key, required this.movie}) : super(key: key);
+  const _MoviePoster({
+    Key? key,
+    required this.movie,
+    required this.heroId,
+  }) : super(key: key);
 
   final Movie movie;
+  final String heroId;
 
   @override
   Widget build(BuildContext context) {
+    movie.heroId = heroId;
     return Container(
       width: 130,
       height: 190,
@@ -70,16 +107,19 @@ class _MoviePoster extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'details',
-                arguments: 'movie-instance'),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: FadeInImage(
-                  placeholder: const AssetImage('assets/no-image.jpg'),
-                  image: NetworkImage(movie.fullPosterImg),
-                  width: 130,
-                  height: 190,
-                  fit: BoxFit.cover),
+            onTap: () =>
+                Navigator.pushNamed(context, 'details', arguments: movie),
+            child: Hero(
+              tag: movie.heroId!,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: FadeInImage(
+                    placeholder: const AssetImage('assets/no-image.jpg'),
+                    image: NetworkImage(movie.fullPosterImg),
+                    width: 130,
+                    height: 190,
+                    fit: BoxFit.cover),
+              ),
             ),
           ),
           const SizedBox(
