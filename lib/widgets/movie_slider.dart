@@ -70,6 +70,7 @@ class _MovieSliderState extends State<MovieSlider> {
             height: 5,
           ),
           Expanded(
+            ///Esta es la parte importante para construir el scroll progresivo
             child: ListView.builder(
                 controller: scrollController,
                 scrollDirection: Axis.horizontal,

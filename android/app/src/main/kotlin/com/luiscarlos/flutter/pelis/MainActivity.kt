@@ -1,4 +1,4 @@
-package com.luiscarlos.flutter.peliculas
+package com.luiscarlos.flutter.pelis
 
 import io.flutter.embedding.android.FlutterActivity
 
